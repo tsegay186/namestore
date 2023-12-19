@@ -1,11 +1,11 @@
-button{
+.contentContainer  button {
   padding: 0;
   width: 80px;
   height: 40px;
   border-radius: 6px;
 }
 
-input{
+.contentContainer input{
   border-radius: 6px;
   box-sizing: border-box;
   height: 40px;
@@ -17,3 +17,4 @@ button:hover{
   cursor: pointer;
   color: black;
   }
+  
