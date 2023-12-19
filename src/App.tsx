@@ -1,16 +1,67 @@
-import React, { useState } from "react"
+import { useState } from "react";
+import Dialog from "./components/Dialog";
 import { entityName } from "./dataSchemas/name"
-
 import './App.css'
-const styleObect = {
-  display: 'flex',
-  gap: '8px',
-  backgroundColor: 'blueviolet',
-  padding: '4px',
-}
 const App = () => {
-  const [short, setShort] = useState<string>('')
-  const [example, setExample] = useState<string>('')
+
+  const [short, setShort] = useState('')
+  const [shorts, setShorts] = useState<string[]>([])
+
+  const [example, setExample] = useState('')
+  const [examples, setExamples] = useState<string[]>([])
+
+  const [shortInputOpen, setShortInputOpen] = useState<boolean>(false)
+  const [exampleInputOpen, setExampleInputOpen] = useState<boolean>(false)
+
+  const handleAddButtonStyle = { borderStyle: 'none', color: 'blue', cursor: 'pointer', padding: '10px 22px 10px 22px', width: 'fit-content', borderRadius: '10px' }
+  const addButtonStyle = { border: '1px solid green', fontFamily: '100px', borderLeftStyle: 'none', cursor: 'pointer', height: '38px', paddingTop: "0", borderLeft: '0px', borderBottomRightRadius: '8px', borderTopRightRadius: '8px' }
+
+  const addShort = () => {
+
+    if (shorts.includes(short)) {
+      console.log('short already registered')
+    } else {
+      setShorts(prev => [...prev, short])
+      setShort('')
+    }
+
+  }
+  const removeShort = (value: string) => {
+    console.log(value, 'value')
+    const shortss = shorts.filter((short) => short !== value)
+    setShorts(shortss)
+  }
+
+  const removeExample = (value: string) => {
+    const exampless = examples.filter((exmple) => exmple !== value)
+    setExamples(exampless)
+  }
+
+  const addExample = (example: string) => {
+    if (examples.includes(example)) {
+      console.log('example already taken')
+    } else {
+      setExamples(prev => [...prev, example])
+      setExample('')
+    }
+  }
+
+  function handleAddShortClick() {
+    setShortInputOpen(true)
+    setExampleInputOpen(false)
+  }
+
+  function handleAddExampleClick() {
+    setShortInputOpen(false)
+    setExampleInputOpen(true)
+  }
+
+  const styleObect = {
+    display: 'flex',
+    gap: '8px',
+    backgroundColor: 'lightgray',
+    padding: '4px',
+  }
 
   const [nameEntity, setNameEntity] = useState<entityName>({
     id: '',
@@ -22,6 +73,7 @@ const App = () => {
     ageStage: 'unknown',
     designation: 'unknown'
   })
+
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const htmlButtonElement = event.target as HTMLButtonElement
     const { name, value } = htmlButtonElement
@@ -29,6 +81,7 @@ const App = () => {
     setNameEntity(updateNameEntity)
     setStateUpdated(true)
   }
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const htmlInpuElement = event.target as HTMLInputElement
     const { name, value } = htmlInpuElement
@@ -36,131 +89,132 @@ const App = () => {
     setNameEntity(updateNameEntity)
     setStateUpdated(true)
   }
+
   const [stateUpdated, setStateUpdated] = useState(false)
+
   const handleSubmit = () => {
     console.log(nameEntity)
   }
 
+
   return (
     <>
-      <div style={{ ...styleObect, margin: '3px', flexWrap: 'wrap' }}>
-        <div >
-          <button disabled>
-            I know
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button name='ageStage' value='baby' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'baby' ? 'cadetblue' : 'buttonface' }}>a Baby</button>
-          <button name='ageStage' value='adult' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'adult' ? 'cadetblue' : 'buttonface' }}>an Adult</button>
-          <button name='ageStage' value='allAges' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'allAges' ? 'cadetblue' : 'buttonface' }}>a Person</button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button name='genderIdentity' value='man' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'man' ? 'cadetblue' : 'buttonface' }}>Man </button>
-          <button name='genderIdentity' value='woman' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'woman' ? 'cadetblue' : 'buttonface' }}>Woman</button>
-          <button name='genderIdentity' value='allGenders' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'allGenders' ? 'cadetblue' : 'buttonface' }}>Man & Woman</button>
-        </div>
-
-        <div style={styleObect}>
-          <button disabled>
-            based  on
-          </button>
-        </div>
-
-        <div >
-          <input name="origin" value={nameEntity.origin} placeholder='Orgin' onChange={handleInputChange} />
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button disabled>Whose</button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button name='designation' value='profession' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'profession' ? 'cadetblue' : 'buttonface' }}>Profession </button>
-          <button name='designation' value='honor' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'honor' ? 'cadetblue' : 'buttonface' }}>Honor</button>
-          <button name='designation' value='proper' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'proper' ? 'cadetblue' : 'buttonface' }}>Proper</button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button disabled>
-            Name
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-          <button disabled>
-            is
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, backgroundColor: 'blueviolet', padding: 4 }}>
-
-          <input name="name" value={nameEntity.name} placeholder='Name' onChange={handleInputChange} />
-
-        </div>
-
-        <div style={{ display: 'flex', backgroundColor: 'blueviolet', padding: 4 }}>
-          {
-            !stateUpdated &&
-            <button onClick={handleSubmit} >
-              <span style={{ fontSize: 18, alignItems: 'center' }}>So Do I</span>
+      <div style={{ ...styleObect, flexDirection: "column" }}>
+        <div style={{ margin: '3px', ...styleObect, flexWrap: 'wrap' }} className="contentContainer">
+          <div style={styleObect}>
+            <button disabled>
+              I know
             </button>
-          }
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <div>
-          <div style={{ margin: '4px' }}>
-            shorts
           </div>
 
-          {
-            nameEntity.shorts &&
-            <div style={{ margin: '8px 0 8px 0', display: 'flex', flexDirection: 'column', gap: '6px', width: '30%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  short
-                </div>
-                <div>
-                  <a href="http://">clear short</a>
-                </div>
-              </div>
-              <div style={{display:'flex'}}>
-                <input value={short} name="short" onChange={(event) => { setShort(event?.target.value) }} type="text" style={{ width: '100%' }} />
-                <div>
-                  <button>add short</button>
-                </div>
-              </div>
-            </div>
-          }
-          <div>
-            <button type="link" >
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button name='ageStage' value='baby' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'baby' ? 'cadetblue' : 'buttonface' }}>a Baby</button>
+            <button name='ageStage' value='adult' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'adult' ? 'cadetblue' : 'buttonface' }}>an Adult</button>
+            <button name='ageStage' value='allAges' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'allAges' ? 'cadetblue' : 'buttonface' }}>a Person</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button name='genderIdentity' value='man' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'man' ? 'cadetblue' : 'buttonface' }}>Man </button>
+            <button name='genderIdentity' value='woman' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'woman' ? 'cadetblue' : 'buttonface' }}>Woman</button>
+            <button name='genderIdentity' value='allGenders' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'allGenders' ? 'cadetblue' : 'buttonface' }}>Man & Woman</button>
+          </div>
+
+          <div style={styleObect}>
+            <button disabled>
+              based  on
+            </button>
+          </div>
+
+          <div style={styleObect}>
+            <input name="origin" value={nameEntity.origin} placeholder='Orgin' onChange={handleInputChange} />
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button disabled>Whose</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button name='designation' value='profession' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'profession' ? 'cadetblue' : 'buttonface' }}>Profession </button>
+            <button name='designation' value='honor' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'honor' ? 'cadetblue' : 'buttonface' }}>Honor</button>
+            <button name='designation' value='proper' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'proper' ? 'cadetblue' : 'buttonface' }}>Proper</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button disabled>
+              Name
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+            <button disabled>
+              is
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+
+            <input name="name" value={nameEntity.name} placeholder='Name' onChange={handleInputChange} />
+
+          </div>
+
+          <div style={{ display: 'flex',  padding: 4 }}>
+            {
+              !stateUpdated &&
+              <button onClick={handleSubmit} >
+                <span style={{ fontSize: 18, alignItems: 'center' }}>So Do I</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div style={{ gap: '18px', display: 'flex', flexDirection: 'column' }}>
+
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', padding: '10px', width: 'fit-content', backgroundColor: 'whitesmoke', borderRadius: '12px', flexWrap: 'wrap', borderStyle: 'none', minWidth:'', maxWidth: '600px' }}>
+
+            <div style={{ display: 'flex', width: 'fit-content', height: 'fit-content', flexWrap: 'wrap' }}>
               {
-                (nameEntity.shorts?.length ?? 0) > 0 ? 'Add more' : 'Add short'
+                shorts.map((short: string, index: number) => (
+                  <div style={{ display: 'block', borderStyle: 'none' }} key={index}>
+                    <Dialog message={short} removeMessage={removeShort}></Dialog>
+                  </div>
+                ))
               }
-            </button>
+
+            </div>
+
+            {
+              !shortInputOpen ? <button onClick={handleAddShortClick} style={handleAddButtonStyle}> add short </button>
+                :
+                <div style={{ display: 'flex' }}>
+                  <input id="short" className="inputElement" value={short} onChange={(e) => setShort(e.target.value)} type="text" placeholder="add short" style={{ height: '34px', width: '50%', paddingLeft: '10px', border: '1px solid green', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px' }} />
+                  <button onClick={addShort} style={addButtonStyle} className="addShortButton"> <span style={{ fontSize: '30px', width: '100%' }}>+</span></button>
+                </div>
+            }
           </div>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', padding: '14px', width: 'fit-content', backgroundColor: 'whitesmoke', borderRadius: '12px', flexWrap: 'wrap', borderStyle: 'none', maxWidth: '600px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px', width: 'fit-content' }}>
+              {
+                examples.map((example: string, index: number) => (
+                  <div style={{ display: 'block', borderStyle: 'none' }} key={index}>
+                    <Dialog message={example} removeMessage={removeExample}></Dialog>
+                  </div>
+                ))
+              }
 
-          <div>
-            <span>
-              add more
-            </span>
+            </div>
+            {
+              !exampleInputOpen ?
+                <button onClick={handleAddExampleClick} style={handleAddButtonStyle}> add example</button>
+                :
+                <div style={{ display: 'flex' }}>
+                  <input id="short" className="inputElement" value={example} onChange={(e) => setExample(e.target.value)} type="text" placeholder="add Example" style={{ height: '34px', width: '65%', paddingLeft: '10px', border: '1px solid green', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px' }} />
+                  <button onClick={() => addExample(example)} style={addButtonStyle} className="addShortButton"> <span style={{ fontSize: '30px', width: '100%' }}>+</span></button>
+                </div>
+            }
           </div>
-
         </div>
-
-        <div style={{ margin: '4px' }}>
-          Examples
-        </div>
-        <div style={{ margin: '4px' }}>
-          <button onClick={handleSubmit} >
-            <span style={{ fontSize: 18, alignItems: 'center' }}>Save</span>
-          </button>
-        </div>
+        <button style={{height:'40px', borderStyle:'none', borderRadius:'8px'}}>create post</button>
       </div>
-
     </>
   )
 }
