@@ -1,14 +1,27 @@
 import { useState } from "react";
 import Dialog from "./components/Dialog";
+import NameComponent from "./components/Dialog/nameComponent";
 import { entityName } from "./dataSchemas/name"
 import './App.css'
 const App = () => {
+  const [names, setNames] = useState<entityName[]>([])
+
+  const [nameEntity, setNameEntity] = useState<entityName>({
+    id: '',
+    name: '',
+    genderIdentity: 'unknown',
+    examples: [],
+    shorts: [],
+    origin: '',
+    ageStage: 'unknown',
+    designation: 'unknown'
+  })
 
   const [short, setShort] = useState('')
   const [shorts, setShorts] = useState<string[]>([])
 
   const [example, setExample] = useState('')
-  const [examples, setExamples] = useState<string[]>([])
+  const [examples, setExamples] = useState<string[]>([...(nameEntity?.examples ?? [])])
 
   const [shortInputOpen, setShortInputOpen] = useState<boolean>(false)
   const [exampleInputOpen, setExampleInputOpen] = useState<boolean>(false)
@@ -18,7 +31,7 @@ const App = () => {
 
   const addShort = () => {
 
-    if (shorts.includes(short)) {
+    if (shorts.includes(short) || (nameEntity?.shorts.includes(short))) {
       console.log('short already registered')
     } else {
       setShorts(prev => [...prev, short])
@@ -38,7 +51,7 @@ const App = () => {
   }
 
   const addExample = (example: string) => {
-    if (examples.includes(example)) {
+    if (examples.includes(example) || (nameEntity?.examples.includes(example))) {
       console.log('example already taken')
     } else {
       setExamples(prev => [...prev, example])
@@ -63,23 +76,13 @@ const App = () => {
     padding: '4px',
   }
 
-  const [nameEntity, setNameEntity] = useState<entityName>({
-    id: '',
-    name: '',
-    genderIdentity: 'unknown',
-    examples: [],
-    shorts: [],
-    origin: '',
-    ageStage: 'unknown',
-    designation: 'unknown'
-  })
+
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const htmlButtonElement = event.target as HTMLButtonElement
     const { name, value } = htmlButtonElement
     const updateNameEntity = { ...nameEntity, [name]: value }
     setNameEntity(updateNameEntity)
-    setStateUpdated(true)
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,15 +90,16 @@ const App = () => {
     const { name, value } = htmlInpuElement
     const updateNameEntity = { ...nameEntity, [name]: value }
     setNameEntity(updateNameEntity)
-    setStateUpdated(true)
   }
-
-  const [stateUpdated, setStateUpdated] = useState(false)
 
   const handleSubmit = () => {
-    console.log(nameEntity)
+    const allExamples = [...nameEntity?.examples ?? [], ...examples]
+    const allShorts = [...nameEntity?.shorts ?? [], ...shorts]
+    const newEntity = { ...nameEntity, examples: [... new Set(allExamples)], shorts: [... new Set(allShorts)] }
+    setNameEntity(() => newEntity)
+    setNames([...names, newEntity])
+    console.log(names, 'hell')
   }
-
 
   return (
     <>
@@ -107,16 +111,16 @@ const App = () => {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button name='ageStage' value='baby' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'baby' ? 'cadetblue' : 'buttonface' }}>a Baby</button>
             <button name='ageStage' value='adult' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'adult' ? 'cadetblue' : 'buttonface' }}>an Adult</button>
-            <button name='ageStage' value='allAges' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'allAges' ? 'cadetblue' : 'buttonface' }}>a Person</button>
+            <button name='ageStage' value='person' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.ageStage === 'person' ? 'cadetblue' : 'buttonface' }}>a Person</button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button name='genderIdentity' value='man' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'man' ? 'cadetblue' : 'buttonface' }}>Man </button>
             <button name='genderIdentity' value='woman' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'woman' ? 'cadetblue' : 'buttonface' }}>Woman</button>
-            <button name='genderIdentity' value='allGenders' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'allGenders' ? 'cadetblue' : 'buttonface' }}>Man & Woman</button>
+            <button name='genderIdentity' value='person' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.genderIdentity === 'person' ? 'cadetblue' : 'buttonface' }}>Man & Woman</button>
           </div>
 
           <div style={styleObect}>
@@ -129,47 +133,38 @@ const App = () => {
             <input name="origin" value={nameEntity.origin} placeholder='Orgin' onChange={handleInputChange} />
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button disabled>Whose</button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button name='designation' value='profession' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'profession' ? 'cadetblue' : 'buttonface' }}>Profession </button>
             <button name='designation' value='honor' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'honor' ? 'cadetblue' : 'buttonface' }}>Honor</button>
             <button name='designation' value='proper' onClick={handleButtonClick} style={{ backgroundColor: nameEntity.designation === 'proper' ? 'cadetblue' : 'buttonface' }}>Proper</button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button disabled>
               Name
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
             <button disabled>
               is
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8,  padding: 4 }}>
+          <div style={{ display: 'flex', gap: 8, padding: 4 }}>
 
             <input name="name" value={nameEntity.name} placeholder='Name' onChange={handleInputChange} />
 
-          </div>
-
-          <div style={{ display: 'flex',  padding: 4 }}>
-            {
-              !stateUpdated &&
-              <button onClick={handleSubmit} >
-                <span style={{ fontSize: 18, alignItems: 'center' }}>So Do I</span>
-              </button>
-            }
           </div>
         </div>
 
         <div style={{ gap: '18px', display: 'flex', flexDirection: 'column' }}>
 
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', padding: '10px', width: 'fit-content', backgroundColor: 'whitesmoke', borderRadius: '12px', flexWrap: 'wrap', borderStyle: 'none', minWidth:'', maxWidth: '600px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', padding: '10px', width: 'fit-content', backgroundColor: 'whitesmoke', borderRadius: '12px', flexWrap: 'wrap', borderStyle: 'none', minWidth: '', maxWidth: '600px' }}>
 
             <div style={{ display: 'flex', width: 'fit-content', height: 'fit-content', flexWrap: 'wrap' }}>
               {
@@ -207,16 +202,24 @@ const App = () => {
                 <button onClick={handleAddExampleClick} style={handleAddButtonStyle}> add example</button>
                 :
                 <div style={{ display: 'flex' }}>
-                  <input id="short" className="inputElement" value={example} onChange={(e) => setExample(e.target.value)} type="text" placeholder="add Example" style={{ height: '34px', width: '65%', paddingLeft: '10px', border: '1px solid green', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px' }} />
+                  <input id="example" className="inputElement" value={example} onChange={(e) => setExample(e.target.value)} type="text" placeholder="add Example" style={{ height: '34px', width: '65%', paddingLeft: '10px', border: '1px solid green', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px' }} />
                   <button onClick={() => addExample(example)} style={addButtonStyle} className="addShortButton"> <span style={{ fontSize: '30px', width: '100%' }}>+</span></button>
                 </div>
             }
           </div>
         </div>
-        <button style={{height:'40px', borderStyle:'none', borderRadius:'8px'}}>create post</button>
+        <button style={{ height: '40px', borderStyle: 'none', borderRadius: '8px' }} onClick={handleSubmit}>create post</button>
       </div>
+      {
+        names.map((zac, index) => (
+          <div key={index} style={{margin:'auto'}}>
+            <NameComponent {...zac}/>
+          </div>
+        ))
+      }
     </>
   )
+
 }
 
 export default App
