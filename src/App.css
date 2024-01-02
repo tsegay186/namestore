@@ -1,4 +1,4 @@
-.contentContainer  button {
+.contentContainer button:not(.zx) {
   padding: 0;
   width: 80px;
   height: 40px;
@@ -6,7 +6,7 @@
   border-style: none;
 }
 
-.contentContainer input{
+.contentContainer input:not(.inpt){
   border-radius: 6px;
   box-sizing: border-box;
   height: 40px;
