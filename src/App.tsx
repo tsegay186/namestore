@@ -13,6 +13,7 @@ const App = () => {
   const handleModalClose = () => {
     dialogRef.current && dialogRef.current.close()
   }
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -28,13 +29,15 @@ const App = () => {
               close
             </button>
           </div>
-          <AddNameDialog names={names} setNames={setNames} closeModal={handleModalClose} />
+          <div style={{ paddingRight: '12px' }}>
+            <AddNameDialog names={names} setNames={setNames} closeModal={handleModalClose} />
+          </div>
         </div>
       </dialog>
-      <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', marginTop:'10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', marginTop: '10px' }}>
         {
           names.map((zac, index) => (
-            <div key={index} style={{ margin: '5px auto', width:'970px', padding:'6px' }}>
+            <div key={index} style={{ margin: '5px auto', padding: '6px' }}>
               <NameComponent {...zac} />
             </div>
           ))
